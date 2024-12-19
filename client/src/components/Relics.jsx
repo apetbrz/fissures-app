@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import '../App.css'
 import MissionType from './MissionType.jsx'
 
 const missionIds = {
@@ -37,9 +37,11 @@ function Relics() {
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
     const [updateFlag, forceUpdate] = useState(false);
     
-    setInterval(() => {
-        setCurrentTime(new Date().toLocaleTimeString());
-    }, 1000);
+    useEffect(() => {
+        setInterval(() => {
+            setCurrentTime(new Date().toLocaleTimeString());
+        }, 1000);
+    }, []);
 
     const fetchAPI = async() => {
         const res = await fetch('http://localhost:3000/worldstate').then((res) => res.json());

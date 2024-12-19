@@ -25,7 +25,7 @@ app.get("/assets/:filename", (req, res) => {
 });
 app.get("/worldstate", (req, res) => {
     let now = Date.now();
-    console.log("worldstate requested - " + new Date(now).toTimeString())
+    console.log("worldstate requested - " + new Date(now).toLocaleTimeString())
     if(updateTime < (now - 1000*60*1)){
         console.log("data timeout");
         updateData();
