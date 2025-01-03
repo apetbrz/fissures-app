@@ -8,4 +8,4 @@ I'll have a more streamlined build guide up soon. For now,
 - for development, run `npm run dev-server` and `npm run dev-client` (preferrably in a split terminal)
   - right now, the local server socket is hardcoded into the client
   - this will be fixed for deployment
-- in `client` run `npm run build` to build the client js directly into where the server can access it (for testing endpoints directly instead of vite dev server)
+- in `/client` run `npm run build` to build the client js directly into where the server can access it (for testing endpoints directly instead of vite dev server)
