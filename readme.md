@@ -2,7 +2,7 @@
 
 I wanted a quick and easy way to check the Warframe public worldstate API for specific missions. So I'm making this. And learning Node.js, Express.js, React, and Vite along the way.
 
-I'll have build scripts up soon. For now,
+I'll have a more streamlined build guide up soon. For now,
 
 - `npm install`
 - for development, run `npm run dev-server` and `npm run dev-client` (preferrably in a split terminal)
