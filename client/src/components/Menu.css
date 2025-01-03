@@ -1,0 +1,14 @@
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    width: 20ch;
+    background-color: var(--color-fg);
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
