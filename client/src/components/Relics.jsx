@@ -4,6 +4,8 @@ import '../App.css'
 import MissionType from './MissionType.jsx'
 import ControlBox from './ControlBox.jsx'
 
+const hostUrl = "http://muro.lan:3000"
+
 // surely theres a way to make this two-way? instead of two objs? shrug
 const missionIds = {
     capture: "MT_CAPTURE",
@@ -46,7 +48,7 @@ function Relics() {
     //??
     const [updateFlag, forceUpdate] = useState(false);
     //local user settings
-    const [enabledMissions, setEnabledMissions] = useState(JSON.parse(Cookies.get("enabledMissions")));
+    const [enabledMissions, setEnabledMissions] = useState({});
     
     //begin 1 second timer, for keeping local time correct
     //TODO: PLEASE MOVE TO CHILD
@@ -58,7 +60,7 @@ function Relics() {
 
     //this fetches worldstate data from cache server
     const fetchAPI = async() => {
-        const res = await fetch('http://localhost:3000/worldstate').then((res) => res.json());
+        const res = await fetch(hostUrl+"/worldstate").then((res) => res.json());
         setTimestamp(res.timestamp);
         setData(res.wfdata);
         setSolnodes(res.solnodes);
@@ -132,7 +134,11 @@ function Relics() {
     },[data]);
 
     useEffect(() => {
-        if(enabledMissions) return;
+        let cookie = Cookies.get("enabledMissions")
+        if(cookie){
+            setEnabledMissions(JSON.parse(cookie))
+            return;
+        }
         let missns = {
             cascade: true,
             capture: true,
@@ -154,7 +160,6 @@ function Relics() {
       let mis = {...enabledMissions}
       mis[title] = !mis[title]
       setEnabledMissions(mis)
-      console.table(enabledMissions)
     }
   
     useEffect(() => {
