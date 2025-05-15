@@ -7,5 +7,6 @@ export default defineConfig({
   build: {
     outDir: '../dist',
     emptyOutDir: true,
-  }
+  },
+  base: "http://localhost:3000/"
 })

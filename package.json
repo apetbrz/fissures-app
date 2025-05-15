@@ -10,7 +10,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "fissures-app": "file:"
+        "fissures-app": "file:",
+        "js-cookie": "^3.0.5"
     },
     "workspaces": [
         "server",

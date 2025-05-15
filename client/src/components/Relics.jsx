@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Cookies from 'js-cookie'
 import '../App.css'
 import MissionType from './MissionType.jsx'
+import ControlBox from './ControlBox.jsx'
 
+// surely theres a way to make this two-way? instead of two objs? shrug
 const missionIds = {
     capture: "MT_CAPTURE",
     exterminate: "MT_EXTERMINATE",
@@ -30,19 +33,30 @@ const relicTiers = {
 }
 
 function Relics() {
+    //the raw worldstate JSON from cache server
     const [data, setData] = useState({});
+    //fissure data
     const [fissures, setFissures] = useState();
+    //timestamp of cache update
     const [timestamp, setTimestamp] = useState(0);
+    //solnodes API data, for translating mission id to mission info
     const [solnodes, setSolnodes] = useState();
+    //current local time TODO: MOVE TO CHILD TO AVOID FULL PAGE RERENDER EVERY SECOND
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+    //??
     const [updateFlag, forceUpdate] = useState(false);
+    //local user settings
+    const [enabledMissions, setEnabledMissions] = useState(JSON.parse(Cookies.get("enabledMissions")));
     
+    //begin 1 second timer, for keeping local time correct
+    //TODO: PLEASE MOVE TO CHILD
     useEffect(() => {
         setInterval(() => {
             setCurrentTime(new Date().toLocaleTimeString());
-        }, 1000);
+        }, 60*1000);
     }, []);
 
+    //this fetches worldstate data from cache server
     const fetchAPI = async() => {
         const res = await fetch('http://localhost:3000/worldstate').then((res) => res.json());
         setTimestamp(res.timestamp);
@@ -50,15 +64,16 @@ function Relics() {
         setSolnodes(res.solnodes);
     }
     
+    //get info for mission from solnodes
     function solnodeLookup(node){
         if(!solnodes || solnodes[node] === undefined) {
-            console.log("SOLNODES IS " + solnodes);
-            console.table(solnodes);
+            console.log("SOLNODES INVALID");
             return {};
         }
         return solnodes[node];
     }
     
+    //convert fissure mission in worldstate into object for rendering on UI
     const worldstateMissionToJSON = (mission) => {
         let node = solnodeLookup(mission.Node);
         return {
@@ -70,6 +85,7 @@ function Relics() {
         }
     }
 
+    //scrape worldstate for all fissure missions and return, separating normal and steel path
     const gatherFissureMissions = (missionData) => {
         if(!missionData) return;
         if(!missionData.ActiveMissions) return;
@@ -99,40 +115,77 @@ function Relics() {
             }
         });
         
-        setFissures({normal, steelpath});
+        return {normal, steelpath};
     }
     
+    //fetch api
     useEffect(() => {
         fetchAPI();
+        setInterval(() => {
+            fetchAPI();
+        }, 60 * 1000);
     }, []);
 
+    //gather fissures
     useEffect(() => {
-        gatherFissureMissions(data);
+        setFissures(gatherFissureMissions(data));
     },[data]);
-    
+
+    useEffect(() => {
+        if(enabledMissions) return;
+        let missns = {
+            cascade: true,
+            capture: true,
+            exterminate: true,
+            disruption: true,
+            survival: true,
+            rescue: true,
+            spcascade: true,
+            spcapture: true,
+            spexterminate: true,
+            spdisruption: true,
+            spsurvival: true,
+            sprescue: true
+        }
+        setEnabledMissions(missns);
+    }, []);
+
+    const toggleMission = (title) => {
+      let mis = {...enabledMissions}
+      mis[title] = !mis[title]
+      setEnabledMissions(mis)
+      console.table(enabledMissions)
+    }
+  
+    useEffect(() => {
+      Cookies.set("enabledMissions", JSON.stringify(enabledMissions), {expires: 14})
+    }, [enabledMissions])
 
     if(fissures) return (
         <>
-            <p id="time">Current Time: { currentTime } </p>
+            <p id="time">Current Time: { currentTime }</p>
             <p id="refresh">Last Worldstate Update: { new Date(timestamp).toLocaleTimeString() }</p>
+            <ControlBox missions={ enabledMissions } toggle={toggleMission}/>
             <div className="relics">
-                <MissionType title="cascade" missions={fissures.normal.cascade} />
-                <MissionType title="capture" missions={fissures.normal.capture} />
-                <MissionType title="exterminate" missions={fissures.normal.exterminate} />
-                <MissionType title="disruption" missions={fissures.normal.disruption} />
-                <MissionType title="survival" missions={fissures.normal.survival} />
-                <MissionType title="rescue" missions={fissures.normal.rescue} />
-                <MissionType title="sp cascade" missions={fissures.steelpath.cascade} />
-                <MissionType title="sp capture" missions={fissures.steelpath.capture} />
-                <MissionType title="sp exterminate" missions={fissures.steelpath.exterminate} />
-                <MissionType title="sp disruption" missions={fissures.steelpath.disruption} />
-                <MissionType title="sp survival" missions={fissures.steelpath.survival} />
-                <MissionType title="sp rescue" missions={fissures.steelpath.rescue} />
+                {enabledMissions.cascade ? <MissionType title="cascade" missions={fissures.normal.cascade} /> : <MissionType />}
+                {enabledMissions.capture ? <MissionType title="capture" missions={fissures.normal.capture} /> : <MissionType />}
+                {enabledMissions.exterminate ? <MissionType title="exterminate" missions={fissures.normal.exterminate} /> : <MissionType />}
+                {enabledMissions.disruption ? <MissionType title="disruption" missions={fissures.normal.disruption} /> : <MissionType />}
+                {enabledMissions.survival ? <MissionType title="survival" missions={fissures.normal.survival} /> : <MissionType />}
+                {enabledMissions.rescue ? <MissionType title="rescue" missions={fissures.normal.rescue} /> : <MissionType />}
+            </div>
+            <div className="relics">
+                {enabledMissions.spcascade ? <MissionType title="sp cascade" missions={fissures.steelpath.cascade} /> : <MissionType />}
+                {enabledMissions.spcapture ? <MissionType title="sp capture" missions={fissures.steelpath.capture} /> : <MissionType />}
+                {enabledMissions.spexterminate ? <MissionType title="sp exterminate" missions={fissures.steelpath.exterminate} /> : <MissionType />}
+                {enabledMissions.spdisruption ? <MissionType title="sp disruption" missions={fissures.steelpath.disruption} /> : <MissionType />}
+                {enabledMissions.spsurvival ? <MissionType title="sp survival" missions={fissures.steelpath.survival} /> : <MissionType />}
+                {enabledMissions.sprescue ? <MissionType title="sp rescue" missions={fissures.steelpath.rescue} /> : <MissionType />}
             </div>
         </>
-        )
+    )
 
-    return (
+    else return (
         <div className="relics">
             <p id="time">Current Time: { currentTime } </p>
             <p>Loading...</p>
