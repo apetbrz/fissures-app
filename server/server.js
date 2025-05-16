@@ -1,13 +1,22 @@
 import path from "path";
 import express from "express";
+import https from "https";
+import fs from "fs";
 import cors from "cors";
 
-const port = 3000;
+const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
+const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
+const certOptions = {
+  key: key,
+  cert: cert
+};
+
+const port = 4000;
 
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:" + port]
+  origin: ["https://relics.apetbrz.dev:" + port]
 };
 app.use(cors(corsOptions));
 
@@ -16,6 +25,7 @@ let solnodes = {};
 let updateTime = 0;
 
 app.get("/", (req, res) => {
+  console.log("index requested!")
   let fileName = path.resolve("../dist/index.html");
   res.sendFile(fileName);
 });
@@ -64,6 +74,8 @@ setInterval(() => {
 
 await getSolnodesData();
 
-app.listen(port, async () => {
-  console.log("server started on port");
+var server = https.createServer(certOptions, app);
+
+server.listen(port, async () => {
+  console.log("server started on port " + port);
 });

@@ -4,7 +4,7 @@ import '../App.css'
 import MissionType from './MissionType.jsx'
 import ControlBox from './ControlBox.jsx'
 
-const hostUrl = "http://muro.lan:3000"
+const hostUrl = "https://relics.apetbrz.dev"
 
 // surely theres a way to make this two-way? instead of two objs? shrug
 const missionIds = {

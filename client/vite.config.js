@@ -8,5 +8,5 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
   },
-  base: "http://localhost:3000/"
+  base: "https://relics.apetbrz.dev/"
 })
