@@ -4,6 +4,7 @@
     "description": "I wanted a quick and easy way to check the Warframe public worldstate API for specific missions. So I'm making this. And learning Node.js, Express.js, React, and Vite along the way.",
     "scripts": {
         "dev-client": "cd client && npm run dev",
+        "dev-client-host": "cd client && npm run dev-host",
         "dev-server": "cd server && npm run dev",
         "dev": "echo \"Please open two terminals and run 'dev-server' and 'dev-client' separately\" && exit 1",
         "build": "cd client && npm run build"
