@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import Cookies from 'js-cookie'
 import '../App.css'
 import MissionType from './MissionType.jsx'
 import ControlBox from './ControlBox.jsx'
@@ -66,7 +65,7 @@ function Relics() {
     }, []);
 
     useEffect(() => {
-        let cookie = Cookies.get("enabledMissions")
+        let cookie = localStorage.getItem("enabledMissions")
         if(cookie){
             setEnabledMissions(JSON.parse(cookie))
             return;
@@ -95,12 +94,11 @@ function Relics() {
     const toggleMission = (title) => {
       let mis = {...enabledMissions}
       mis[title] = !mis[title]
-      console.table(mis);
       setEnabledMissions(mis)
     }
   
     useEffect(() => {
-      Cookies.set("enabledMissions", JSON.stringify(enabledMissions), {expires: 14})
+      localStorage.setItem("enabledMissions", JSON.stringify(enabledMissions))
     }, [enabledMissions])
 
     if(data.normal && data.steelpath){
