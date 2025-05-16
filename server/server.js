@@ -42,15 +42,16 @@ app.get("/worldstate", async (req, res) => {
 })
 
 let updateData = async () => {
-  updateTime = Date.now();
-  console.log("refreshing data: " + new Date(updateTime).toTimeString())
+  console.log("refreshing data: " + new Date().toTimeString())
   await getSolnodesData();
   console.log("fetching wfdata...");
   fetch('https://content.warframe.com/dynamic/worldState.php')
     .then((res) => res.json())
     .then((data) => {
-      wfdata = gatherFissureMissions(data, solnodes);
       console.log("...wfdata loaded");
+      wfdata = gatherFissureMissions(data, solnodes);
+      console.log("...wfdata parsed");
+      updateTime = data.Time*1000;
     });
 }
 
