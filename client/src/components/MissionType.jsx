@@ -8,11 +8,12 @@ function MissionType({title, missions}) {
 
     let count = 0;
     const missionList = missions.map(mission => {
+        console.log(mission.until)
         return <div className="mission" key={count++}>
             <p>Relic Tier: {mission.relic}</p>
             <p>Planet: {mission.planet}</p>
             <p>Faction: {mission.faction}</p>
-            <p>Expires: {mission.until}</p>
+            <p>Expires: {new Date(mission.until).toLocaleTimeString()}</p>
         </div>;
     });
 

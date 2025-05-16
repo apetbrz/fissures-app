@@ -47,7 +47,7 @@ const worldstateMissionToJSON = (mission, solnodes) => {
         planet: node.value,
         steelpath: mission.Hard != null,
         faction: node.enemy,
-        until: new Date(Number(mission.Expiry.$date.$numberLong)).toLocaleTimeString()
+        until: Number(mission.Expiry.$date.$numberLong)
     }
 }
 
