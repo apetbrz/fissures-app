@@ -10,7 +10,6 @@ function ControlBox({missions, toggle}){
     }
 
     return (
-      <div className="container">
         <div className="control-box">
           <button className="toggle-btn toggle-cascade" onClick={toggleMission("cascade")}>cascade</button>
           <button className="toggle-btn toggle-capture" onClick={toggleMission("capture")}>capture</button>
@@ -25,7 +24,6 @@ function ControlBox({missions, toggle}){
           <button className="toggle-btn toggle-spsurvival" onClick={toggleMission("spsurvival")}>spsurvival</button>
           <button className="toggle-btn toggle-sprescue" onClick={toggleMission("sprescue")}>sprescue</button>
         </div>
-      </div>
     )
 }
 
