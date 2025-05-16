@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 import '../App.css'
 import MissionType from './MissionType.jsx'
 import ControlBox from './ControlBox.jsx'
+import Clock from './Clock.jsx'
 
 const hostUrl = "https://relics.apetbrz.dev"
 
@@ -47,14 +48,6 @@ function Relics() {
     const [updateFlag, forceUpdate] = useState(false);
     //local user settings
     const [enabledMissions, setEnabledMissions] = useState({});
-    
-    //begin 1 second timer, for keeping local time correct
-    //TODO: PLEASE MOVE TO CHILD
-    useEffect(() => {
-        setInterval(() => {
-            setCurrentTime(new Date().toLocaleTimeString());
-        }, 60*1000);
-    }, []);
 
     //this fetches worldstate data from cache server
     const fetchAPI = async() => {
@@ -107,7 +100,7 @@ function Relics() {
 
     if(data) return (
         <>
-            <p id="time">Current Time: { currentTime }</p>
+            <Clock />
             <p id="refresh">Last Worldstate Update: { new Date(timestamp).toLocaleTimeString() }</p>
             <ControlBox missions={ enabledMissions } toggle={toggleMission}/>
             <div className="relics">
