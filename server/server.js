@@ -3,6 +3,7 @@ import express from "express";
 import https from "https";
 import fs from "fs";
 import cors from "cors";
+import gatherFissureMissions from "./data.js";
 
 const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
 const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
@@ -25,14 +26,13 @@ let solnodes = {};
 let updateTime = 0;
 
 app.get("/", (req, res) => {
-  console.log("index requested!")
   let fileName = path.resolve("../dist/index.html");
   res.sendFile(fileName);
 });
 app.use("/assets", express.static("../dist/assets"));
 app.get("/worldstate", async (req, res) => {
   let now = Date.now();
-  console.log("worldstate requested - " + new Date(now).toLocaleTimeString())
+  console.log("worldstate requested - " + new Date(now).toLocaleTimeString() + " - " + req.get("x-real-ip"))
   if(updateTime < (now - 1000*60*1)){
     console.log("data timeout, last update at - " + new Date(updateTime).toLocaleTimeString());
     await updateData();
@@ -44,18 +44,19 @@ app.get("/worldstate", async (req, res) => {
 let updateData = async () => {
   updateTime = Date.now();
   console.log("refreshing data: " + new Date(updateTime).toTimeString())
+  await getSolnodesData();
   console.log("fetching wfdata...");
   fetch('https://content.warframe.com/dynamic/worldState.php')
     .then((res) => res.json())
     .then((data) => {
-      wfdata = data;
+      wfdata = gatherFissureMissions(data, solnodes);
       console.log("...wfdata loaded");
     });
 }
 
 let getSolnodesData = async () => {
   console.log("fetching solnodes data...");
-  fetch('https://api.warframestat.us/solNodes/')
+  await fetch('https://api.warframestat.us/solNodes/')
     .then((res) => res.json())
     .then((data) => {
       if(data === null) console.log("...failed to load solnodes data")
@@ -66,16 +67,13 @@ let getSolnodesData = async () => {
     });
 }
 
-await updateData();
-
 setInterval(() => {
   updateData();
 }, 2*60*1000);
-
-await getSolnodesData();
 
 var server = https.createServer(certOptions, app);
 
 server.listen(port, async () => {
   console.log("server started on port " + port);
+  await updateData();
 });

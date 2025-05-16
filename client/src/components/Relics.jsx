@@ -35,10 +35,8 @@ const relicTiers = {
 }
 
 function Relics() {
-    //the raw worldstate JSON from cache server
+    //the parsed fissure data from the cache server
     const [data, setData] = useState({});
-    //fissure data
-    const [fissures, setFissures] = useState();
     //timestamp of cache update
     const [timestamp, setTimestamp] = useState(0);
     //solnodes API data, for translating mission id to mission info
@@ -66,60 +64,6 @@ function Relics() {
         setSolnodes(res.solnodes);
     }
     
-    //get info for mission from solnodes
-    function solnodeLookup(node){
-        if(!solnodes || solnodes[node] === undefined) {
-            console.log("SOLNODES INVALID");
-            return {};
-        }
-        return solnodes[node];
-    }
-    
-    //convert fissure mission in worldstate into object for rendering on UI
-    const worldstateMissionToJSON = (mission) => {
-        let node = solnodeLookup(mission.Node);
-        return {
-            relic: relicTiers[mission.Modifier],
-            planet: node.value,
-            steelpath: mission.Hard != null,
-            faction: node.enemy,
-            until: new Date(Number(mission.Expiry.$date.$numberLong)).toLocaleTimeString()
-        }
-    }
-
-    //scrape worldstate for all fissure missions and return, separating normal and steel path
-    const gatherFissureMissions = (missionData) => {
-        if(!missionData) return;
-        if(!missionData.ActiveMissions) return;
-        
-        let normal = { 
-            capture: [],
-            exterminate: [],
-            disruption: [],
-            survival: [],
-            rescue: [],
-            cascade: []
-        };
-        let steelpath = { 
-            capture: [],
-            exterminate: [],
-            disruption: [],
-            survival: [],
-            rescue: [],
-            cascade: []
-        };
-
-        missionData.ActiveMissions.forEach(mission => {
-            let missionTitle = missionTitles[mission.MissionType];
-            if(missionTitle) {
-                let missionObj = worldstateMissionToJSON(mission);
-                (missionObj.steelpath ? steelpath : normal)[missionTitle].push(missionObj);
-            }
-        });
-        
-        return {normal, steelpath};
-    }
-    
     //fetch api
     useEffect(() => {
         fetchAPI();
@@ -127,11 +71,6 @@ function Relics() {
             fetchAPI();
         }, 60 * 1000);
     }, []);
-
-    //gather fissures
-    useEffect(() => {
-        setFissures(gatherFissureMissions(data));
-    },[data]);
 
     useEffect(() => {
         let cookie = Cookies.get("enabledMissions")
@@ -166,26 +105,26 @@ function Relics() {
       Cookies.set("enabledMissions", JSON.stringify(enabledMissions), {expires: 14})
     }, [enabledMissions])
 
-    if(fissures) return (
+    if(data) return (
         <>
             <p id="time">Current Time: { currentTime }</p>
             <p id="refresh">Last Worldstate Update: { new Date(timestamp).toLocaleTimeString() }</p>
             <ControlBox missions={ enabledMissions } toggle={toggleMission}/>
             <div className="relics">
-                {enabledMissions.cascade ? <MissionType title="cascade" missions={fissures.normal.cascade} /> : <MissionType />}
-                {enabledMissions.capture ? <MissionType title="capture" missions={fissures.normal.capture} /> : <MissionType />}
-                {enabledMissions.exterminate ? <MissionType title="exterminate" missions={fissures.normal.exterminate} /> : <MissionType />}
-                {enabledMissions.disruption ? <MissionType title="disruption" missions={fissures.normal.disruption} /> : <MissionType />}
-                {enabledMissions.survival ? <MissionType title="survival" missions={fissures.normal.survival} /> : <MissionType />}
-                {enabledMissions.rescue ? <MissionType title="rescue" missions={fissures.normal.rescue} /> : <MissionType />}
+                {enabledMissions.cascade ? <MissionType title="cascade" missions={data.normal.cascade} /> : <MissionType />}
+                {enabledMissions.capture ? <MissionType title="capture" missions={data.normal.capture} /> : <MissionType />}
+                {enabledMissions.exterminate ? <MissionType title="exterminate" missions={data.normal.exterminate} /> : <MissionType />}
+                {enabledMissions.disruption ? <MissionType title="disruption" missions={data.normal.disruption} /> : <MissionType />}
+                {enabledMissions.survival ? <MissionType title="survival" missions={data.normal.survival} /> : <MissionType />}
+                {enabledMissions.rescue ? <MissionType title="rescue" missions={data.normal.rescue} /> : <MissionType />}
             </div>
             <div className="relics">
-                {enabledMissions.spcascade ? <MissionType title="sp cascade" missions={fissures.steelpath.cascade} /> : <MissionType />}
-                {enabledMissions.spcapture ? <MissionType title="sp capture" missions={fissures.steelpath.capture} /> : <MissionType />}
-                {enabledMissions.spexterminate ? <MissionType title="sp exterminate" missions={fissures.steelpath.exterminate} /> : <MissionType />}
-                {enabledMissions.spdisruption ? <MissionType title="sp disruption" missions={fissures.steelpath.disruption} /> : <MissionType />}
-                {enabledMissions.spsurvival ? <MissionType title="sp survival" missions={fissures.steelpath.survival} /> : <MissionType />}
-                {enabledMissions.sprescue ? <MissionType title="sp rescue" missions={fissures.steelpath.rescue} /> : <MissionType />}
+                {enabledMissions.spcascade ? <MissionType title="sp cascade" missions={data.steelpath.cascade} /> : <MissionType />}
+                {enabledMissions.spcapture ? <MissionType title="sp capture" missions={data.steelpath.capture} /> : <MissionType />}
+                {enabledMissions.spexterminate ? <MissionType title="sp exterminate" missions={data.steelpath.exterminate} /> : <MissionType />}
+                {enabledMissions.spdisruption ? <MissionType title="sp disruption" missions={data.steelpath.disruption} /> : <MissionType />}
+                {enabledMissions.spsurvival ? <MissionType title="sp survival" missions={data.steelpath.survival} /> : <MissionType />}
+                {enabledMissions.sprescue ? <MissionType title="sp rescue" missions={data.steelpath.rescue} /> : <MissionType />}
             </div>
         </>
     )
