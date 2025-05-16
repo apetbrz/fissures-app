@@ -43,15 +43,14 @@ app.get("/worldstate", async (req, res) => {
 
 let updateData = async () => {
   console.log("refreshing data: " + new Date().toTimeString())
-  await getSolnodesData();
   console.log("fetching wfdata...");
-  fetch('https://content.warframe.com/dynamic/worldState.php')
+  await fetch('https://content.warframe.com/dynamic/worldState.php')
     .then((res) => res.json())
     .then((data) => {
       console.log("...wfdata loaded");
       wfdata = gatherFissureMissions(data, solnodes);
-      console.log("...wfdata parsed");
       updateTime = data.Time*1000;
+      console.log("...wfdata parsed");
     });
 }
 
@@ -72,9 +71,18 @@ setInterval(() => {
   updateData();
 }, 2*60*1000);
 
+setInterval(() => {
+  getSolnodesData();
+}, 60*60*1000);
+
 var server = https.createServer(certOptions, app);
 
-server.listen(port, async () => {
-  console.log("server started on port " + port);
+let main = async () => {
+  await getSolnodesData();
   await updateData();
-});
+  server.listen(port, () => {
+    console.log("server started on port " + port);
+  });
+}
+
+main();
