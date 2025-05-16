@@ -6,6 +6,8 @@ const missionIds = {
     survival: "MT_SURVIVAL",
     rescue: "MT_RESCUE",
     cascade: "MT_VOID_CASCADE",
+    flood: "MT_CORRUPTION",
+    alchemy: "MT_ALCHEMY",
 }
 
 const missionTitles = {
@@ -15,6 +17,8 @@ const missionTitles = {
     MT_SURVIVAL: "survival",
     MT_RESCUE: "rescue",
     MT_VOID_CASCADE: "cascade",
+    MT_CORRUPTION: "flood",
+    MT_ALCHEMY: "alchemy",
 }
 
 const relicTiers = {
@@ -52,21 +56,25 @@ const gatherFissureMissions = (missionData, solnodes) => {
     if(!missionData) return;
     if(!missionData.ActiveMissions) return;
     
-    let normal = { 
+    var normal = { 
+        alchemy: [],
         capture: [],
-        exterminate: [],
+        cascade: [],
         disruption: [],
-        survival: [],
+        exterminate: [],
+        flood: [],
         rescue: [],
-        cascade: []
+        survival: [],
     };
-    let steelpath = { 
+    var steelpath = { 
+        alchemy: [],
         capture: [],
-        exterminate: [],
+        cascade: [],
         disruption: [],
-        survival: [],
+        exterminate: [],
+        flood: [],
         rescue: [],
-        cascade: []
+        survival: [],
     };
 
     missionData.ActiveMissions.forEach(mission => {

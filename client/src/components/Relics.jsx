@@ -72,18 +72,22 @@ function Relics() {
             return;
         }
         let missns = {
-            cascade: true,
+            alchemy: true,
             capture: true,
+            cascade: true,
             exterminate: true,
             disruption: true,
-            survival: true,
+            flood: true,
             rescue: true,
-            spcascade: true,
+            survival: true,
+            spalchemy: true,
             spcapture: true,
+            spcascade: true,
             spexterminate: true,
             spdisruption: true,
+            spflood: true,
+            sprescue: true,
             spsurvival: true,
-            sprescue: true
         }
         setEnabledMissions(missns);
     }, []);
@@ -91,6 +95,7 @@ function Relics() {
     const toggleMission = (title) => {
       let mis = {...enabledMissions}
       mis[title] = !mis[title]
+      console.table(mis);
       setEnabledMissions(mis)
     }
   
@@ -98,35 +103,36 @@ function Relics() {
       Cookies.set("enabledMissions", JSON.stringify(enabledMissions), {expires: 14})
     }, [enabledMissions])
 
-    if(data) return (
-        <>
-            <Clock />
-            <p id="refresh">Last Worldstate Update: { new Date(timestamp).toLocaleTimeString() }</p>
-            <ControlBox missions={ enabledMissions } toggle={toggleMission}/>
-            <div className="relics">
-                {enabledMissions.cascade ? <MissionType title="cascade" missions={data.normal.cascade} /> : <MissionType />}
-                {enabledMissions.capture ? <MissionType title="capture" missions={data.normal.capture} /> : <MissionType />}
-                {enabledMissions.exterminate ? <MissionType title="exterminate" missions={data.normal.exterminate} /> : <MissionType />}
-                {enabledMissions.disruption ? <MissionType title="disruption" missions={data.normal.disruption} /> : <MissionType />}
-                {enabledMissions.survival ? <MissionType title="survival" missions={data.normal.survival} /> : <MissionType />}
-                {enabledMissions.rescue ? <MissionType title="rescue" missions={data.normal.rescue} /> : <MissionType />}
-            </div>
-            <div className="relics">
-                {enabledMissions.spcascade ? <MissionType title="sp cascade" missions={data.steelpath.cascade} /> : <MissionType />}
-                {enabledMissions.spcapture ? <MissionType title="sp capture" missions={data.steelpath.capture} /> : <MissionType />}
-                {enabledMissions.spexterminate ? <MissionType title="sp exterminate" missions={data.steelpath.exterminate} /> : <MissionType />}
-                {enabledMissions.spdisruption ? <MissionType title="sp disruption" missions={data.steelpath.disruption} /> : <MissionType />}
-                {enabledMissions.spsurvival ? <MissionType title="sp survival" missions={data.steelpath.survival} /> : <MissionType />}
-                {enabledMissions.sprescue ? <MissionType title="sp rescue" missions={data.steelpath.rescue} /> : <MissionType />}
-            </div>
-        </>
-    )
+    if(data.normal && data.steelpath){
+        let normalMissions = Object.keys(data.normal).map((missionName) => {
+            if(enabledMissions[missionName]) return <MissionType title={missionName} missions={data.normal[missionName]} />
+            else return <MissionType />
+        })
+        let spMissions = Object.keys(data.steelpath).map((missionName) => {
+            if(enabledMissions["sp" + missionName]) return <MissionType title={"sp " + missionName} missions={data.steelpath[missionName]} />
+            else return <MissionType />
+        })
+
+        return (
+            <>
+                <Clock />
+                <p id="refresh">Last Worldstate Update: { new Date(timestamp).toLocaleTimeString() }</p>
+                <ControlBox missions={ enabledMissions } toggle={toggleMission}/>
+                <div className="relics">
+                    {normalMissions}
+                </div>
+                <div className="relics">
+                    {spMissions}
+                </div>
+            </>
+        )
+    }
 
     else return (
-        <div className="relics">
-            <p id="time">Current Time: { currentTime } </p>
-            <p>Loading...</p>
-        </div>
+        <>
+            <Clock />
+            <p className="time">Loading...</p>
+        </>
     )
 }
 
