@@ -37,7 +37,7 @@ app.get("/worldstate", async (req, res) => {
     console.log("data timeout, last update at - " + new Date(updateTime).toLocaleTimeString());
     await updateData();
   }
-  let output = {wfdata: wfdata, solnodes: solnodes, timestamp: updateTime};
+  let output = {wfdata: wfdata, timestamp: updateTime};
   res.json(output);
 })
 
@@ -51,6 +51,9 @@ let updateData = async () => {
       wfdata = gatherFissureMissions(data, solnodes);
       updateTime = data.Time*1000;
       console.log("...wfdata parsed");
+    })
+    .catch((err) => {
+      console.log("WORLDSTATE FETCH ERR: " + err);
     });
 }
 
@@ -64,6 +67,9 @@ let getSolnodesData = async () => {
         solnodes = data;
         console.log("...solnodes data loaded");
       }
+    })
+    .catch((err) => {
+      console.log("SOLNODES FETCH ERR: " + err);
     });
 }
 
