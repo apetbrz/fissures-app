@@ -4,7 +4,9 @@ import MissionType from './MissionType.jsx'
 import ControlBox from './ControlBox.jsx'
 import Clock from './Clock.jsx'
 
-const hostUrl = "https://relics.apetbrz.dev"
+let hostUrl;
+if(import.meta.env.DEV) hostUrl = "http://localhost:3000"
+else hostUrl = "https://relics.apetbrz.dev"
 
 function Relics() {
     //the parsed fissure data from the cache server

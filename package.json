@@ -5,7 +5,8 @@
     "scripts": {
         "dev-client": "cd client && npm run dev",
         "dev-client-host": "cd client && npm run dev-host",
-        "dev-server": "cd server && npm run dev",
+        "dev-server": "export IS_DEV=true && cd server && npm run dev",
+	"start": "cd server && npm run start",
         "dev": "echo \"Please open two terminals and run 'dev-server' and 'dev-client' separately\" && exit 1",
         "build": "cd client && npm run build"
     },

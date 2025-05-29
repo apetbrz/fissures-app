@@ -5,19 +5,23 @@ import fs from "fs";
 import cors from "cors";
 import gatherFissureMissions from "./data.js";
 
-const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
-const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
-const certOptions = {
-  key: key,
-  cert: cert
-};
+let port;
+let corsOrigin;
+if(process.env.IS_DEV){
+	port = 3000;
+	corsOrigin = "*"
+}
+else{
+	port = 4000;
+	corsOrigin = "https://relics.apetbrz.dev:" + port;
+}
 
-const port = 4000;
+console.log("cors origin: " + corsOrigin);
 
 const app = express();
 
 const corsOptions = {
-  origin: ["https://relics.apetbrz.dev:" + port]
+	origin: [corsOrigin]
 };
 app.use(cors(corsOptions));
 
@@ -32,12 +36,15 @@ app.get("/", (req, res) => {
 app.use("/assets", express.static("../dist/assets"));
 app.get("/worldstate", async (req, res) => {
   let now = Date.now();
-  console.log("worldstate requested - " + new Date(now).toLocaleTimeString() + " - " + req.get("x-real-ip"))
+  let clientIp = req.get("x-real-ip");
+  if(!clientIp) clientIp = req.ip + " - not proxied";
+  console.log("worldstate requested - " + new Date(now).toLocaleTimeString() + " - " + clientIp)
   if(updateTime < (now - 1000*60*1)){
     console.log("data timeout, last update at - " + new Date(updateTime).toLocaleTimeString());
     await updateData();
   }
   let output = {wfdata: wfdata, timestamp: updateTime};
+  res.set("Access-Control-Allow-Origin","*")
   res.json(output);
 })
 
@@ -81,7 +88,21 @@ setInterval(() => {
   getSolnodesData();
 }, 60*60*1000);
 
-var server = https.createServer(certOptions, app);
+var server;
+if(process.env.IS_DEV){
+	console.log("IS_DEV environment, no HTTPS");
+	server = app;
+}
+else {
+	console.log("production environment, HTTPS");
+	const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
+	const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
+	const certOptions = {
+	  key: key,
+	  cert: cert
+	};
+	server = https.createServer(certOptions, app);
+}
 
 let main = async () => {
   await getSolnodesData();
