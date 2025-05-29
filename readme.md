@@ -1,5 +1,7 @@
 # Warframe Fissure Mission Tracker
 
+https://relics.apetbrz.dev/
+
 I wanted a quick and easy way to check the Warframe public worldstate API for specific missions. So I'm making this. And learning Node.js, Express.js, React, and Vite along the way.
 
 Setup:
