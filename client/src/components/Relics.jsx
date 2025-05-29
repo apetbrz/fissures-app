@@ -6,34 +6,6 @@ import Clock from './Clock.jsx'
 
 const hostUrl = "https://relics.apetbrz.dev"
 
-// surely theres a way to make this two-way? instead of two objs? shrug
-const missionIds = {
-    capture: "MT_CAPTURE",
-    exterminate: "MT_EXTERMINATE",
-    disruption: "MT_ARTIFACT",
-    survival: "MT_SURVIVAL",
-    rescue: "MT_RESCUE",
-    cascade: "MT_VOID_CASCADE",
-}
-
-const missionTitles = {
-    MT_CAPTURE: "capture",
-    MT_EXTERMINATE: "exterminate",
-    MT_ARTIFACT: "disruption",
-    MT_SURVIVAL: "survival",
-    MT_RESCUE: "rescue",
-    MT_VOID_CASCADE: "cascade",
-}
-
-const relicTiers = {
-    VoidT1: "Lith",
-    VoidT2: "Meso",
-    VoidT3: "Neo",
-    VoidT4: "Axi",
-    VoidT5: "Requiem",
-    VoidT6: "Omnia"
-}
-
 function Relics() {
     //the parsed fissure data from the cache server
     const [data, setData] = useState({});
