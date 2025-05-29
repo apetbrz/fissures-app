@@ -12,3 +12,4 @@ Setup:
   - client vite server runs on port 5173
 - for production, run `npm run build` to build the client, and `npm run start` to start the server with the built files
   - prod server runs on port 4000
+  - temporarily hardcoded to target my domain
