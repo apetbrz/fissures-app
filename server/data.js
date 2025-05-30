@@ -1,6 +1,7 @@
 // surely theres a way to make this two-way? instead of two objs? shrug
 const missionIds = {
     capture: "MT_CAPTURE",
+    excavation: "MT_EXCAVATE",
     exterminate: "MT_EXTERMINATE",
     disruption: "MT_ARTIFACT",
     survival: "MT_SURVIVAL",
@@ -12,6 +13,7 @@ const missionIds = {
 
 const missionTitles = {
     MT_CAPTURE: "capture",
+    MT_EXCAVATE: "excavation",
     MT_EXTERMINATE: "exterminate",
     MT_ARTIFACT: "disruption",
     MT_SURVIVAL: "survival",
@@ -61,6 +63,7 @@ const gatherFissureMissions = (missionData, solnodes) => {
         capture: [],
         cascade: [],
         disruption: [],
+        excavation: [],
         exterminate: [],
         flood: [],
         rescue: [],
@@ -71,6 +74,7 @@ const gatherFissureMissions = (missionData, solnodes) => {
         capture: [],
         cascade: [],
         disruption: [],
+        excavation: [],
         exterminate: [],
         flood: [],
         rescue: [],
