@@ -29,6 +29,7 @@ function ControlBox({missions, toggle}){
           <button className={`toggle-btn toggle-spcapture ${missions.spcapture? "enabled":"disabled"}`} onClick={toggleMission("spcapture")}>sp capture</button>
           <button className={`toggle-btn toggle-spcascade ${missions.spcascade? "enabled":"disabled"}`} onClick={toggleMission("spcascade")}>sp cascade</button>
           <button className={`toggle-btn toggle-spexcavation ${missions.spexcavation? "enabled":"disabled"}`} onClick={toggleMission("spexcavation")}>sp excavation</button>
+          <button className={`toggle-btn toggle-spexterminate ${missions.spexterminate? "enabled":"disabled"}`} onClick={toggleMission("spexterminate")}>sp exterminate</button>
           <button className={`toggle-btn toggle-spdisruption ${missions.spdisruption? "enabled":"disabled"}`} onClick={toggleMission("spdisruption")}>sp disruption</button>
           <button className={`toggle-btn toggle-spflood ${missions.spflood? "enabled":"disabled"}`} onClick={toggleMission("spflood")}>sp flood</button>
           <button className={`toggle-btn toggle-sprescue ${missions.sprescue? "enabled":"disabled"}`} onClick={toggleMission("sprescue")}>sp rescue</button>
