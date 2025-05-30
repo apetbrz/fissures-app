@@ -32,13 +32,13 @@
 
 .mission-type {
     padding: 2ch;
-    width: calc(100%-2em);
+    width: calc(100% - 2em);
     background-color: #202020;
     border-radius: 1ch;
 }
 
 .bounding-box { 
-  width: calc(100%-2em);
+  width: calc(100% - 2em);
 }
 
 .relics {
