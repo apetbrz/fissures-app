@@ -41,22 +41,23 @@ function Relics() {
   useEffect(() => {
     
     if(!data?.normal) return;
-    let missns = {
-      normal: {},
-      steelpath: {},
-    }
-
     let cookie = JSON.parse(localStorage.getItem("enabledMissions"))
-
-    Object.keys(data.normal).map((missionName) => { missns.normal[missionName] = true })
-    Object.keys(data.steelpath).map((missionName) => { missns.steelpath[missionName] = true })
 
     let cookieVals = Object.keys(cookie.normal);
     let dataVals = Object.keys(data.normal);
+
     if(cookie?.normal && dataVals.length == cookieVals.length && cookieVals.every((element, key) => element == dataVals[key])){
       setEnabledMissions(cookie)
     }
     else{
+      
+      let missns = {
+        normal: {},
+        steelpath: {},
+      }
+      Object.keys(data.normal).map((missionName) => { missns.normal[missionName] = true })
+      Object.keys(data.steelpath).map((missionName) => { missns.steelpath[missionName] = true })
+
       setEnabledMissions(missns);
     }
   }, [data]);
