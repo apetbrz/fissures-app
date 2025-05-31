@@ -48,7 +48,6 @@ function Relics() {
 
     let cookie = JSON.parse(localStorage.getItem("enabledMissions"))
 
-                <Clock />
     Object.keys(data.normal).map((missionName) => { missns.normal[missionName] = true })
     Object.keys(data.steelpath).map((missionName) => { missns.steelpath[missionName] = true })
 
@@ -60,7 +59,6 @@ function Relics() {
     }
   }, [data]);
 
-            <Clock />
   const toggleMission = (title, steelpath=false) => {
     let mis = {...enabledMissions}
     let mode = steelpath? "steelpath" : "normal"
