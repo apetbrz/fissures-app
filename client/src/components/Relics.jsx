@@ -59,6 +59,7 @@ function Relics() {
       Object.keys(data.steelpath).map((missionName) => { missns.steelpath[missionName] = true })
 
       setEnabledMissions(missns);
+      saveSettings()
     }
   }, [data]);
 
