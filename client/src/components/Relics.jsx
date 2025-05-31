@@ -51,7 +51,9 @@ function Relics() {
     Object.keys(data.normal).map((missionName) => { missns.normal[missionName] = true })
     Object.keys(data.steelpath).map((missionName) => { missns.steelpath[missionName] = true })
 
-    if(cookie?.normal && Object.keys(cookie?.normal) == Object.keys(missns.normal)){
+    let cookieVals = Object.keys(cookie.normal);
+    let dataVals = Object.keys(data.normal);
+    if(cookie?.normal && dataVals.length == cookieVals.length && cookieVals.every((element, key) => element == dataVals[key])){
       setEnabledMissions(cookie)
     }
     else{
