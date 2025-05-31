@@ -43,8 +43,8 @@ function Relics() {
     if(!data?.normal) return;
     let cookie = JSON.parse(localStorage.getItem("enabledMissions"))
 
-    let cookieVals = Object.keys(cookie.normal);
-    let dataVals = Object.keys(data.normal);
+    let cookieVals = cookie?.normal ? Object.keys(cookie?.normal) : [];
+    let dataVals = data?.normal ? Object.keys(data.normal) : [];
 
     if(cookie?.normal && dataVals.length == cookieVals.length && cookieVals.every((element, key) => element == dataVals[key])){
       setEnabledMissions(cookie)
