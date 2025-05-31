@@ -8,12 +8,12 @@ import gatherFissureMissions from "./data.js";
 let port;
 let corsOrigin;
 if(process.env.IS_DEV){
-	port = 3000;
-	corsOrigin = "*"
+  port = 3000;
+  corsOrigin = "*"
 }
 else{
-	port = 4000;
-	corsOrigin = "https://relics.apetbrz.dev:" + port;
+  port = 4000;
+  corsOrigin = "https://relics.apetbrz.dev:" + port;
 }
 
 console.log("cors origin: " + corsOrigin);
@@ -21,7 +21,7 @@ console.log("cors origin: " + corsOrigin);
 const app = express();
 
 const corsOptions = {
-	origin: [corsOrigin]
+  origin: [corsOrigin]
 };
 app.use(cors(corsOptions));
 
@@ -52,32 +52,32 @@ let updateData = async () => {
   console.log("refreshing data: " + new Date().toTimeString())
   console.log("fetching wfdata...");
   await fetch('https://content.warframe.com/dynamic/worldState.php')
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("...wfdata loaded");
-      wfdata = gatherFissureMissions(data, solnodes);
-      updateTime = data.Time*1000;
-      console.log("...wfdata parsed");
-    })
-    .catch((err) => {
-      console.log("WORLDSTATE FETCH ERR: " + err);
-    });
+  .then((res) => res.json())
+  .then((data) => {
+    console.log("...wfdata loaded");
+    wfdata = gatherFissureMissions(data, solnodes);
+    updateTime = data.Time*1000;
+    console.log("...wfdata parsed");
+  })
+  .catch((err) => {
+    console.log("WORLDSTATE FETCH ERR: " + err);
+  });
 }
 
 let getSolnodesData = async () => {
   console.log("fetching solnodes data...");
   await fetch('https://api.warframestat.us/solNodes/')
-    .then((res) => res.json())
-    .then((data) => {
-      if(data === null) console.log("...failed to load solnodes data")
+  .then((res) => res.json())
+  .then((data) => {
+    if(data === null) console.log("...failed to load solnodes data")
       else {
         solnodes = data;
         console.log("...solnodes data loaded");
       }
-    })
-    .catch((err) => {
-      console.log("SOLNODES FETCH ERR: " + err);
-    });
+  })
+  .catch((err) => {
+    console.log("SOLNODES FETCH ERR: " + err);
+  });
 }
 
 setInterval(() => {
@@ -90,18 +90,18 @@ setInterval(() => {
 
 var server;
 if(process.env.IS_DEV){
-	console.log("IS_DEV environment, no HTTPS");
-	server = app;
+  console.log("IS_DEV environment, no HTTPS");
+  server = app;
 }
 else {
-	console.log("production environment, HTTPS");
-	const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
-	const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
-	const certOptions = {
-	  key: key,
-	  cert: cert
-	};
-	server = https.createServer(certOptions, app);
+  console.log("production environment, HTTPS");
+  const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
+  const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
+  const certOptions = {
+    key: key,
+    cert: cert
+  };
+  server = https.createServer(certOptions, app);
 }
 
 let main = async () => {
