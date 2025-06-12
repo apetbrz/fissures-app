@@ -5,9 +5,9 @@ import Clock from "./components/Clock.jsx"
 function App() {
     return (
         <>
-        <h1 className="bold">RelicLookup</h1>
-        <Clock />
-        <Relics />
+            <h1 className="bold">RelicLookup</h1>
+            <Clock />
+            <Relics />
         </>
     )
 }

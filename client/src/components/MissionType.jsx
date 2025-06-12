@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import '../App.css'
 
-function MissionType({title, missions}) {
+function MissionType({ title, missions }) {
 
-    if(!missions) return (<></>)
-    const trimmedTitle = title.replace(" ","");
+    if (!missions) return (<></>)
+    const trimmedTitle = title.replace(" ", "");
 
     let count = 0;
     const missionList = missions.map(mission => {
@@ -18,10 +18,10 @@ function MissionType({title, missions}) {
 
     return (
         <div className="bounding-box">
-          <div className="mission-type">
-              <label>{title}</label>
-              <div className="missions">{missionList}</div>
-          </div>
+            <div className="mission-type">
+                <label>{title}</label>
+                <div className="missions">{missionList}</div>
+            </div>
         </div>
     )
 }
