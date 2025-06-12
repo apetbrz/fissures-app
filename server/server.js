@@ -12,8 +12,8 @@ if(process.env.IS_DEV){
   corsOrigin = "*"
 }
 else{
-  port = 4000;
-  corsOrigin = "https://relics.apetbrz.dev:" + port;
+  port = 4001;
+  corsOrigin = "https://relics.apetbrz.dev";
 }
 
 console.log("cors origin: " + corsOrigin);
@@ -108,7 +108,7 @@ let main = async () => {
   await getSolnodesData();
   await updateData();
   server.listen(port, () => {
-    console.log("server started on port " + port);
+    console.log("server started on port " + port + "\n\n");
   });
 }
 
