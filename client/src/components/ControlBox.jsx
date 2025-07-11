@@ -18,14 +18,16 @@ function ControlBox({ missions, toggle }) {
         return <button className={`toggle-btn toggle-${"sp" + missionName} ${missions.steelpath[missionName] ? "enabled" : "disabled"}`}
             onClick={toggleMission(missionName, true)}
             key={"sp" + missionName}
-        >{"sp " + missionName}</button>
+        >{missionName}</button>
     })
     return (
         <div>
             <div className="control-box">
+                normal
                 {normalButtons}
             </div>
             <div className="control-box">
+                steel path
                 {steelpathButtons}
             </div>
         </div>
