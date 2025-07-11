@@ -82,28 +82,28 @@ function Relics() {
         localStorage.setItem("enabledMissions", JSON.stringify(enabledMissions));
     };
 
-    if (data.normal && data.steelpath && enabledMissions.normal) {
-        let normalMissions = Object.keys(data.normal).map((missionName) => {
-            if (enabledMissions.normal[missionName])
-                return (
-                    <MissionType
-                        title={missionName}
-                        missions={data.normal[missionName]}
-                        key={missionName}
-                    />
-                );
-            else return <MissionType key={missionName} />;
+    //if data is invalid, render empty element
+    if (!data?.normal || !data?.steelpath || !enabledMissions.normal) return (<></>)
+    //otherwise, valid data!
+    else {
+        //get mission lists from the data directly:
+        let normalMissions = Object.keys(data.normal).filter((missionName) => enabledMissions.normal[missionName]).map((missionName) => {
+            return (
+                <MissionType
+                    title={missionName}
+                    missions={data.normal[missionName]}
+                    key={missionName}
+                />
+            );
         });
-        let spMissions = Object.keys(data.steelpath).map((missionName) => {
-            if (enabledMissions.steelpath[missionName])
-                return (
-                    <MissionType
-                        title={"sp " + missionName}
-                        missions={data.steelpath[missionName]}
-                        key={"sp" + missionName}
-                    />
-                );
-            else return <MissionType key={"sp" + missionName} />;
+        let spMissions = Object.keys(data.steelpath).filter((missionName) => enabledMissions.steelpath[missionName]).map((missionName) => {
+            return (
+                <MissionType
+                    title={"sp " + missionName}
+                    missions={data.steelpath[missionName]}
+                    key={"sp" + missionName}
+                />
+            );
         });
 
         return (
@@ -116,12 +116,7 @@ function Relics() {
                 <div className="relics">{spMissions}</div>
             </>
         );
-    } else
-        return (
-            <>
-                <p className="time">Loading...</p>
-            </>
-        );
+    }
 }
 
 export default Relics;
