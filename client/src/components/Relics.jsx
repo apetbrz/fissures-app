@@ -98,9 +98,14 @@ function Relics() {
                 <p id="refresh">
                     Last Worldstate Update: {new Date(timestamp).toLocaleTimeString()}
                 </p>
-                <ControlBox missions={enabledMissions} toggle={toggleMission} />
-                <div className="relics">{normalMissions}</div>
-                <div className="relics">{spMissions}</div>
+                <div className="relics">
+                    <ControlBox missions={enabledMissions} toggle={toggleMission} />
+                    <div>
+                        <div className="mission-block">{normalMissions}</div>
+                        <div className="mission-block">{spMissions}</div>
+                    </div>
+                    <div style={{ width: "100%" }} />
+                </div>
             </>
         );
     }
