@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import '../App.css'
 
-function Clock(){
-    
+function Clock() {
+
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
     //begin 1 second timer, for keeping local time correct
@@ -15,7 +15,7 @@ function Clock(){
 
     return (
         <div className="clock">
-            <p id="time">Current Time: { currentTime }</p>
+            <p id="time">Current Time: {currentTime}</p>
         </div>
     )
 }

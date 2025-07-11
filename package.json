@@ -3,14 +3,14 @@
     "version": "1.0.0",
     "description": "I wanted a quick and easy way to check the Warframe public worldstate API for specific missions. So I'm making this. And learning Node.js, Express.js, React, and Vite along the way.",
     "scripts": {
-        "dev-client": "cd client && npm run dev",
-        "dev-client-host": "cd client && npm run dev-host",
-        "dev-server": "export IS_DEV=true && cd server && npm run dev",
-	"start": "cd server && npm run start",
-        "dev": "echo \"Please open two terminals and run 'dev-server' and 'dev-client' separately\" && exit 1",
-        "build": "cd client && npm run build"
+        "dev:client": "cd client && npm run dev",
+        "dev:client:host": "cd client && npm run dev-host",
+        "dev:server": "export IS_DEV=true && cd server && npm run dev",
+        "dev": "tmux new-session -s 'fissures-app (dev)' 'npm run dev:server' \\; split-window 'npm run dev:client' \\; select-layout even-horizontal \\;",
+        "build": "cd client && npm run build",
+        "start": "cd server && npm run start"
     },
-    "author": "",
+    "author": "Arthur Petroff",
     "license": "ISC",
     "dependencies": {
         "fissures-app": "file:",
