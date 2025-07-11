@@ -1,35 +1,30 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import "../App.css";
 import MissionType from "./MissionType.jsx";
-import ControlBox from "./ControlBox.jsx";
-import Clock from "./Clock.jsx";
+import { ControlBox, defaultSettingsFromData } from "./ControlBox.jsx";
 
 let hostUrl;
 if (import.meta.env.DEV) hostUrl = "http://localhost:3000";
 else hostUrl = "https://relics.apetbrz.dev";
+
+//save settings to local storage
+function saveSettings(newSettings) {
+    localStorage.setItem("enabledMissions", JSON.stringify(newSettings));
+};
 
 function Relics() {
     //the parsed fissure data from the cache server
     const [data, setData] = useState({});
     //timestamp of cache update
     const [timestamp, setTimestamp] = useState(0);
-    //solnodes API data, for translating mission id to mission info
-    const [solnodes, setSolnodes] = useState();
-    //current local time  TODO: MOVE TO CHILD TO AVOID FULL PAGE RERENDER EVERY SECOND
-    const [currentTime, setCurrentTime] = useState(
-        new Date().toLocaleTimeString(),
-    );
-    //??
-    const [updateFlag, forceUpdate] = useState(false);
     //local user settings
-    const [enabledMissions, setEnabledMissions] = useState({});
+    const [enabledMissions, setEnabledMissions] = useState(JSON.parse(localStorage.getItem("enabledMissions") || "{}"));
 
     //this fetches worldstate data from cache server
     const fetchAPI = async () => {
         const res = await fetch(hostUrl + "/worldstate").then((res) => res.json());
         setTimestamp(res.timestamp);
         setData(res.wfdata);
-        setSolnodes(res.solnodes);
     };
 
     //fetch api
@@ -40,47 +35,39 @@ function Relics() {
         }, 60 * 1000);
     }, []);
 
-    useEffect(() => {
-        if (!data?.normal) return;
-        let cookie = JSON.parse(localStorage.getItem("enabledMissions"));
-
-        let cookieVals = cookie?.normal ? Object.keys(cookie?.normal) : [];
-        let dataVals = data?.normal ? Object.keys(data.normal) : [];
-
-        if (
-            cookie?.normal &&
-            dataVals.length == cookieVals.length &&
-            cookieVals.every((element, key) => element == dataVals[key])
-        ) {
-            setEnabledMissions(cookie);
-        } else {
-            let missns = {
-                normal: {},
-                steelpath: {},
-            };
-            Object.keys(data.normal).map((missionName) => {
-                missns.normal[missionName] = true;
-            });
-            Object.keys(data.steelpath).map((missionName) => {
-                missns.steelpath[missionName] = true;
-            });
-
-            setEnabledMissions(missns);
-            saveSettings();
-        }
-    }, [data]);
-
+    //toggle mission visibility (used in ControlBox)
     const toggleMission = (title, steelpath = false) => {
         let mis = { ...enabledMissions };
         let mode = steelpath ? "steelpath" : "normal";
         mis[mode][title] = !mis[mode][title];
         setEnabledMissions(mis);
-        saveSettings();
+        saveSettings(enabledMissions);
     };
 
-    const saveSettings = () => {
-        localStorage.setItem("enabledMissions", JSON.stringify(enabledMissions));
-    };
+    //manage sync between locally stored settings and incoming mission type data
+    useEffect(() => {
+        //broken data?
+        if (!data?.normal) return;
+
+        //get local storage item, or {} if not exists
+        let localSettings = JSON.parse(localStorage.getItem("enabledMissions") || "{}");
+
+        //assume normal/steelpath have identical mission names
+        let localMissionTypes = localSettings?.normal ? Object.keys(localSettings?.normal) : [];
+        let incomingMissionTypes = Object.keys(data.normal);
+
+        //if the two lists are not identical,
+        if (
+            !(incomingMissionTypes.length == localMissionTypes.length &&
+                localMissionTypes.every((element, key) => element == incomingMissionTypes[key]))
+        ) {
+            //create default settings on the new mission data
+            let missns = defaultSettingsFromData(data);
+            //and save
+            setEnabledMissions(missns);
+            saveSettings(enabledMissions);
+        }
+    }, [data]);
 
     //if data is invalid, render empty element
     if (!data?.normal || !data?.steelpath || !enabledMissions.normal) return (<></>)

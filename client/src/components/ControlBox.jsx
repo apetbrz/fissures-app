@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import '../App.css'
 
 function ControlBox({ missions, toggle }) {
@@ -22,15 +21,29 @@ function ControlBox({ missions, toggle }) {
         >{"sp " + missionName}</button>
     })
     return (
-        <>
+        <div>
             <div className="control-box">
                 {normalButtons}
             </div>
             <div className="control-box">
                 {steelpathButtons}
             </div>
-        </>
+        </div>
     )
 }
 
-export default ControlBox
+function defaultSettingsFromData(data) {
+    let missns = {
+        normal: {},
+        steelpath: {},
+    };
+    Object.keys(data.normal).map((missionName) => {
+        missns.normal[missionName] = true;
+    });
+    Object.keys(data.steelpath).map((missionName) => {
+        missns.steelpath[missionName] = true;
+    });
+    return missns
+}
+
+export { ControlBox, defaultSettingsFromData }
