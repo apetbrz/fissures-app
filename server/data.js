@@ -46,7 +46,7 @@ const worldstateMissionToJSON = (mission, solnodes) => {
     let node = solnodeLookup(solnodes, mission.Node);
     return {
         relic: relicTiers[mission.Modifier],
-        planet: node.value,
+        node: node.value,
         steelpath: mission.Hard != null,
         faction: node.enemy,
         until: Number(mission.Expiry.$date.$numberLong)
