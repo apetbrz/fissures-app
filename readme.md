@@ -1,6 +1,6 @@
 # Warframe Fissure Mission Tracker
 
-## A quick and easy way to check the Warframe public worldstate API for specific missions.
+## A quick tool to parse the Warframe public worldstate API for Void Fissure missions.
 
 https://relics.apetbrz.dev/
 
