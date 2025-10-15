@@ -7,13 +7,13 @@ import gatherFissureMissions from "./data.js";
 
 let port;
 let corsOrigin;
-if (process.env.IS_DEV) {
+if (process.env.ENVIRONMENT == "RELEASE") {
+    port = 4001;
+    corsOrigin = "https://relics.apetbrz.dev";
+}
+else {
     port = 3000;
     corsOrigin = "*"
-}
-else{
-  port = 4001;
-  corsOrigin = "https://relics.apetbrz.dev";
 }
 
 console.log("cors origin: " + corsOrigin);
@@ -89,11 +89,7 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 var server;
-if (process.env.IS_DEV) {
-    console.log("IS_DEV environment, no HTTPS");
-    server = app;
-}
-else {
+if (process.env.ENVIRONMENT == "RELEASE") {
     console.log("production environment, HTTPS");
     const key = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.key");
     const cert = fs.readFileSync(import.meta.dirname + "/secret/selfsigned.crt");
@@ -103,13 +99,17 @@ else {
     };
     server = https.createServer(certOptions, app);
 }
+else {
+    console.log("development environment, no HTTPS");
+    server = app;
+}
 
 let main = async () => {
-  await getSolnodesData();
-  await updateData();
-  server.listen(port, () => {
-    console.log("server started on port " + port + "\n\n");
-  });
+    await getSolnodesData();
+    await updateData();
+    server.listen(port, () => {
+        console.log("server started on port " + port + "\n\n");
+    });
 }
 
 main();
